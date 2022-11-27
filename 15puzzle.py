@@ -136,6 +136,7 @@ def solve(m, n, start_pos):
 
     if intersection is None:
         print("No solution found")
+        return None
 
     lst1 = []
     curr = record1[intersection]
@@ -173,7 +174,7 @@ if __name__ == "__main__":
     while op < 1 or op > 2:
         op = int(input("Auto generate matrix (1) or input a matrix (2): "))
         if op == 1:
-            start_pos = make_random_start_pos(m, n, 100)
+            start_pos = make_random_start_pos(m, n, 10000)
             # 10000, ubije program ili kompijuter posle 10M shallow kopija za 4x4
         elif op == 2:
             start_pos = [
