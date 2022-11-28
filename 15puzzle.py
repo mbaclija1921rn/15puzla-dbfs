@@ -89,10 +89,11 @@ def solve(start_pos, print_flag=True):
     start_state = State(None, start_pos, find0(start_pos), "_start_")
     print("Starting position:")
     start_state.print_matrix()
+    print()
     end_state = State(None, end_pos, find0(end_pos), "_end_")
     print("Ending position")
     end_state.print_matrix()
-
+    print()
     if start_state == end_state:
         print("Starting and ending positions are the same")
         return
@@ -107,9 +108,8 @@ def solve(start_pos, print_flag=True):
     move_count = 0
     intersection = None
     while intersection is None and (len(last_level1) + len(last_level2)) > 0:
-        print(f"moves {move_count+1}, {move_count+2}")
+        print(f"Moves {move_count+1}, {move_count+2}: shallow copies = {len(record1)+len(record2)}")
         move_count += 2
-        print(f"shallow copies = {len(record1)+len(record2)}")
 
         def bfs_one_level(last_level, record):
             new_level = []
@@ -166,12 +166,12 @@ def solve(start_pos, print_flag=True):
         curr = curr.parent
 
     def print_game(lst1, lst2):
+        print()
         for state in lst1:
             state.print_matrix()
         for state in lst2[1:]:
             state.print_matrix()
             # [1: ] zato sto je zadnji u prvoj dodat 2 puta
-
     if print_flag:
         print_game(lst1, lst2)
 
@@ -181,7 +181,7 @@ def solve(start_pos, print_flag=True):
     for state in lst2[:-1]:
         move = reverse_dir[state.last_move]
         moves.append(move)
-    print(f"{len(moves)} moves")
+    print(f"\n{len(moves)} moves")
     print("".join(moves))
 
 
