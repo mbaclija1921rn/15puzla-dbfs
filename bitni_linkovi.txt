@@ -1,0 +1,3 @@
+http://taquin.net/en/taquin_3x3_std/i1.html - potencijalno visok shuffle count 
+https://www.artbylogic.com/puzzles/numSlider/numberShuffle.htm?rows=4&cols=4&sqr=1 - nizak sc
+https://15puzzle.netlify.app/ - visok sc, samo 4x4
