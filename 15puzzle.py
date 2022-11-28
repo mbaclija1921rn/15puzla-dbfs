@@ -208,7 +208,7 @@ def main():
     start_t = time.time()
     solve(start_pos=start_pos, print_flag=(print_ans == "y"))
     end_t = time.time()
-    print(f"Took {round(end_t - start_t, 1)}s")
+    print(f"Took {round(end_t - start_t, 2)}s")
 
 
 if __name__ == "__main__":
