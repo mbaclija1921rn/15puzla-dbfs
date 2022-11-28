@@ -1,11 +1,8 @@
 from random import choice
 import numpy as np
 import time
-from multiprocessing import Process
 from functools import partial
 from threading import Thread
-
-# bfs sa obe strane da bi se minimizovalo rasireno grananje
 
 dy = [-1, 0, 0, 1]
 dx = [0, -1, 1, 0]
