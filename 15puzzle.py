@@ -69,8 +69,8 @@ class State:
         cnt = self.matrix.shape[1] * 8 - 7 + int(math.log10((self.matrix.size - 1)))
         print("-" * cnt)
         for row in self.matrix:
-            strX = lambda e: "X" if e == 0 else str(e)
-            print("\t".join(map(strX, row.tolist())))
+            str0X = lambda e: "X" if e == 0 else str(e)
+            print("\t".join(map(str0X, row.tolist())))
 
     def hash_util(self):
         return hash(self.matrix.data.tobytes())
@@ -108,7 +108,9 @@ def solve(start_pos, print_flag=True):
     move_count = 0
     intersection = None
     while intersection is None and (len(last_level1) + len(last_level2)) > 0:
-        print(f"Moves {move_count+1}, {move_count+2}: shallow copies = {len(record1)+len(record2)}")
+        print(
+            f"Moves {move_count+1}, {move_count+2}: shallow copies = {len(record1)+len(record2)}"
+        )
         move_count += 2
 
         def bfs_one_level(last_level, record):
@@ -172,6 +174,7 @@ def solve(start_pos, print_flag=True):
         for state in lst2[1:]:
             state.print_matrix()
             # [1: ] zato sto je zadnji u prvoj dodat 2 puta
+
     if print_flag:
         print_game(lst1, lst2)
 
@@ -197,14 +200,16 @@ def main():
         shuffle_count = def_sc if shuffle_ans == "" else int(shuffle_ans)
         start_pos = make_random_start_pos(m, n, shuffle_count)
     elif op == 2:
+        intX0 = lambda e: 0 if e == "X" or e == "x" else int(e)
         start_pos = np.array(
-            [list(map(int, input(f"Row {i+1}: ").split())) for i in range(m)],
+            [list(map(intX0, input(f"Row {i+1}: ").split())) for i in range(m)],
             np.uint8,
         )
     print_ans = "_"
     while print_ans not in ["y", "n"]:
-        print_ans = input("Print move by move? (y/n): ")
-
+        print_ans = input("Print move by move? (Y/n): ").lower()
+        if print_ans == "":
+            print_ans = "y"
     start_t = time.time()
     solve(start_pos=start_pos, print_flag=(print_ans == "y"))
     end_t = time.time()
