@@ -1,5 +1,4 @@
 from random import choice
-from collections import deque
 import numpy as np
 import time
 
@@ -76,7 +75,7 @@ class State:
         return np.array_equal(self.matrix, other.matrix)
 
 
-def solve(start_pos):
+def solve(start_pos, print_flag=True):
     m, n = start_pos.shape
     end_pos = make_end_pos(m, n)
     start_state = State(None, start_pos, find0(start_pos), "_start_")
@@ -139,12 +138,14 @@ def solve(start_pos):
         lst2.append(curr)
         curr = curr.parent
 
-    print_flag = False
-    if print_flag:
+    def print_game(lst1, lst2):
         for state in lst1:
             state.print_matrix()
         for state in lst2[1:]:
             state.print_matrix()
+
+    if print_flag:
+        print_game(lst1, lst2)
 
     moves = []
     for state in lst1[1:]:
@@ -160,19 +161,20 @@ if __name__ == "__main__":
     m, n = map(int, input("Enter dimension (M N): ").split())
 
     op = 0
-    while op < 1 or op > 2:
+    while op not in [1, 2]:
         op = int(input("Auto generate matrix (1) or input a matrix (2): "))
-        if op == 1:
-            start_pos = make_random_start_pos(m, n, 10000)
-            # 10000, ubije program ili kompijuter posle 10M shallow kopija za 4x4
-        elif op == 2:
-            start_pos = np.array(
-                [list(map(int, input(f"Row {i+1}: ").split())) for i in range(m)],
-                np.int8,
-            )
-        else:
-            print("Wrong input")
+    if op == 1:
+        start_pos = make_random_start_pos(m, n, 10000)
+    elif op == 2:
+        start_pos = np.array(
+            [list(map(int, input(f"Row {i+1}: ").split())) for i in range(m)],
+            np.int8,
+        )
+    pf_ans = "_"
+    while pf_ans not in ["y", "n"]:
+        pf_ans = input("Print move by move? (y/n): ")
+
     start_t = time.time()
-    solve(start_pos)
+    solve(start_pos=start_pos, print_flag=(pf_ans == "y"))
     end_t = time.time()
-    print(f"Finished after {end_t - start_t}s")
+    print(f"Took {round(end_t - start_t, 1)}s")
