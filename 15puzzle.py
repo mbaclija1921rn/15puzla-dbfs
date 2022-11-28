@@ -69,7 +69,8 @@ class State:
         cnt = self.matrix.shape[1] * 8 - 7 + int(math.log10((self.matrix.size - 1)))
         print("-" * cnt)
         for row in self.matrix:
-            print("\t".join(map(str, row.tolist())))
+            strX = lambda e: "X" if e == 0 else str(e)
+            print("\t".join(map(strX, row.tolist())))
 
     def hash_util(self):
         return hash(self.matrix.data.tobytes())
