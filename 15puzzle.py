@@ -54,6 +54,7 @@ class State:
         self.matrix = matrix
         self.zero_pos = zero_pos
         self.last_move = last_move
+        self.hash = self.hash_util()
 
     def create_children(self):
         m, n = self.matrix.shape
@@ -71,11 +72,15 @@ class State:
         for row in self.matrix:
             print("\t".join(map(str, row.tolist())))
 
-    def __hash__(self):
+    def hash_util(self):
         return hash(self.matrix.data.tobytes())
 
+    def __hash__(self):
+        return self.hash
+
     def __eq__(self, other):
-        return np.array_equal(self.matrix, other.matrix)
+        return self.hash == other.hash
+        # return np.array_equal(self.matrix, other.matrix)
 
 
 def solve(start_pos, print_flag=True):
@@ -118,15 +123,22 @@ def solve(start_pos, print_flag=True):
         t1.join()
         t2.join()
 
-        def find_intersection(last_level, other_record):
+        def find_intersection(last_level, other_record, intersection_mut):
             for state in last_level:
                 if state in other_record:
-                    return state
-            return None
+                    intersection_mut[0] = state
+                    return None
 
-        intersection = find_intersection(last_level1, record2)
-        if intersection is None:
-            intersection = find_intersection(last_level2, record1)
+        tmp_mut = [None]
+        intersection1 = partial(find_intersection, last_level1, record2, tmp_mut)
+        intersection2 = partial(find_intersection, last_level2, record1, tmp_mut)
+        t1 = Thread(target=intersection1)
+        t2 = Thread(target=intersection2)
+        t1.start()
+        t2.start()
+        t1.join()
+        t2.join()
+        intersection = tmp_mut[0]
 
     if intersection is None:
         print("No solution found")
