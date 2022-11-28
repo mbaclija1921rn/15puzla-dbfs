@@ -1,6 +1,9 @@
 from random import choice
 import numpy as np
 import time
+from multiprocessing import Process
+from functools import partial
+from threading import Thread
 
 # bfs sa obe strane da bi se minimizovalo rasireno grananje
 
@@ -82,6 +85,7 @@ def solve(start_pos, print_flag=True):
     print("Starting position:")
     start_state.print_matrix()
     end_state = State(None, end_pos, find0(end_pos), "_end_")
+    print("Ending position")
     end_state.print_matrix()
     last_level1 = [start_state]
     last_level2 = [end_state]
@@ -91,35 +95,38 @@ def solve(start_pos, print_flag=True):
     record2[end_state] = end_state
 
     intersection = None
-    while len(last_level1) + len(last_level2) > 0:
+    while intersection is None and (len(last_level1) + len(last_level2)) > 0:
         print(f"shallow copies = {len(record1)+len(record2)}")
-        new_level1 = []
-        for state in last_level1:
-            if intersection is not None:
-                break
-            for child in state.create_children():
-                if child in record1:
-                    continue
-                record1[child] = child
-                if child in record2:
-                    intersection = child
-                    break
-                new_level1.append(child)
-        last_level1 = new_level1
 
-        new_level2 = []
-        for state in last_level2:
-            if intersection is not None:
-                break
-            for child in state.create_children():
-                if child in record2:
-                    continue
-                record2[child] = child
-                if child in record1:
-                    intersection = child
-                    break
-                new_level2.append(child)
-        last_level2 = new_level2
+        def bfs_one_level(last_level, record):
+            new_level = []
+            for state in last_level:
+                for child in state.create_children():
+                    if child in record:
+                        continue
+                    record[child] = child
+                    new_level.append(child)
+            last_level.clear()
+            last_level.extend(new_level)
+
+        bfs1 = partial(bfs_one_level, last_level1, record1)
+        bfs2 = partial(bfs_one_level, last_level2, record2)
+        t1 = Thread(target=bfs1)
+        t2 = Thread(target=bfs2)
+        t1.start()
+        t2.start()
+        t1.join()
+        t2.join()
+
+        def find_intersection(last_level, other_record):
+            for state in last_level:
+                if state in other_record:
+                    return state
+            return None
+
+        intersection = find_intersection(last_level1, record2)
+        if intersection is None:
+            intersection = find_intersection(last_level2, record1)
 
     if intersection is None:
         print("No solution found")
@@ -143,6 +150,7 @@ def solve(start_pos, print_flag=True):
             state.print_matrix()
         for state in lst2[1:]:
             state.print_matrix()
+            # [1: ] zato sto je zadnji u prvoj dodat 2 puta
 
     if print_flag:
         print_game(lst1, lst2)
@@ -170,11 +178,11 @@ if __name__ == "__main__":
             [list(map(int, input(f"Row {i+1}: ").split())) for i in range(m)],
             np.int8,
         )
-    pf_ans = "_"
-    while pf_ans not in ["y", "n"]:
-        pf_ans = input("Print move by move? (y/n): ")
+    print_ans = "_"
+    while print_ans not in ["y", "n"]:
+        print_ans = input("Print move by move? (y/n): ")
 
     start_t = time.time()
-    solve(start_pos=start_pos, print_flag=(pf_ans == "y"))
+    solve(start_pos=start_pos, print_flag=(print_ans == "y"))
     end_t = time.time()
     print(f"Took {round(end_t - start_t, 1)}s")
