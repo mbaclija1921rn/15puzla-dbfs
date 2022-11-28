@@ -3,6 +3,7 @@ import numpy as np
 import time
 from functools import partial
 from threading import Thread
+import math
 
 dy = [-1, 0, 0, 1]
 dx = [0, -1, 1, 0]
@@ -65,7 +66,8 @@ class State:
                 yield State(self, n_mat, (n0y, n0x), dname)
 
     def print_matrix(self):
-        print("-" * 50)
+        cnt = self.matrix.shape[1] * 8 - 7 + int(math.log10((self.matrix.size - 1)))
+        print("-" * cnt)
         for row in self.matrix:
             print("\t".join(map(str, row.tolist())))
 
@@ -191,7 +193,7 @@ def main():
     if op == 1:
         def_sc = 100
         shuffle_ans = input(f"Enter shuffle count (default {def_sc}): ")
-        shuffle_count = def_sc if (shuffle_ans == "") else int(shuffle_ans)
+        shuffle_count = def_sc if shuffle_ans == "" else int(shuffle_ans)
         start_pos = make_random_start_pos(m, n, shuffle_count)
     elif op == 2:
         start_pos = np.array(
