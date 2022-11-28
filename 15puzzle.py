@@ -32,7 +32,7 @@ def make_end_pos(m, n):
             lst.append(num)
         end_pos.append(lst)
     end_pos[m - 1][n - 1] = 0
-    return np.array(end_pos, np.int8)
+    return np.array(end_pos, np.uint8)
 
 
 def make_random_start_pos(m, n, shuffle_count=1000):
@@ -45,7 +45,7 @@ def make_random_start_pos(m, n, shuffle_count=1000):
         if legit(n0y, n0x, m, n):
             pos[c0y][c0x], pos[n0y][n0x] = pos[n0y][n0x], pos[c0y][c0x]
             c0y, c0x = n0y, n0x
-    return np.array(pos, np.int8)
+    return np.array(pos, np.uint8)
 
 
 class State:
@@ -92,6 +92,11 @@ def solve(start_pos, print_flag=True):
     end_state = State(None, end_pos, find0(end_pos), "_end_")
     print("Ending position")
     end_state.print_matrix()
+
+    if start_state == end_state:
+        print("Starting and ending positions are the same")
+        return
+
     last_level1 = [start_state]
     last_level2 = [end_state]
     record1 = dict()
@@ -99,8 +104,11 @@ def solve(start_pos, print_flag=True):
     record2 = dict()
     record2[end_state] = end_state
 
+    move_count = 0
     intersection = None
     while intersection is None and (len(last_level1) + len(last_level2)) > 0:
+        print(f"moves {move_count+1}, {move_count+2}")
+        move_count += 2
         print(f"shallow copies = {len(record1)+len(record2)}")
 
         def bfs_one_level(last_level, record):
@@ -173,22 +181,25 @@ def solve(start_pos, print_flag=True):
     for state in lst2[:-1]:
         move = reverse_dir[state.last_move]
         moves.append(move)
-    print(f"{len(moves) = }")
+    print(f"{len(moves)} moves")
     print("".join(moves))
 
 
-if __name__ == "__main__":
+def main():
     m, n = map(int, input("Enter dimension (M N): ").split())
 
     op = 0
     while op not in [1, 2]:
         op = int(input("Auto generate matrix (1) or input a matrix (2): "))
     if op == 1:
-        start_pos = make_random_start_pos(m, n, 10000)
+        def_sc = 100
+        shuffle_ans = input(f"Enter shuffle count (default {def_sc}): ")
+        shuffle_count = def_sc if (shuffle_ans == "") else int(shuffle_ans)
+        start_pos = make_random_start_pos(m, n, shuffle_count)
     elif op == 2:
         start_pos = np.array(
             [list(map(int, input(f"Row {i+1}: ").split())) for i in range(m)],
-            np.int8,
+            np.uint8,
         )
     print_ans = "_"
     while print_ans not in ["y", "n"]:
@@ -198,3 +209,7 @@ if __name__ == "__main__":
     solve(start_pos=start_pos, print_flag=(print_ans == "y"))
     end_t = time.time()
     print(f"Took {round(end_t - start_t, 1)}s")
+
+
+if __name__ == "__main__":
+    main()
