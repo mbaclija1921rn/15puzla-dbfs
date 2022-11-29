@@ -109,7 +109,7 @@ def solve(start_pos, print_flag=True):
     intersection = None
     while intersection is None and (len(last_level1) + len(last_level2)) > 0:
         print(
-            f"Moves {move_count+1}, {move_count+2}: shallow copies = {len(record1)+len(record2)}"
+            f"Moves {move_count+1}, {move_count+2}: {len(record1)+len(record2)} nodes"
         )
         move_count += 2
 
