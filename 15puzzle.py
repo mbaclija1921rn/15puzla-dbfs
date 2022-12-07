@@ -4,7 +4,7 @@ import time
 from functools import partial
 from threading import Thread
 import math
-from typing import Tuple, Generator
+from typing import Tuple
 
 dy = [-1, 0, 0, 1]
 dx = [0, -1, 1, 0]
@@ -96,7 +96,7 @@ class State:
 
 
 def solve(
-    start_pos: np.ndarray, print_move_by_move: bool = True, print_tree: bool = False
+    start_pos: np.ndarray, print_move_by_move: bool = True, print_trees: bool = False
 ):
     m, n = start_pos.shape
     end_pos = make_end_pos(m, n)
@@ -171,7 +171,7 @@ def solve(
                 state.print()
                 print()
 
-        if print_tree:
+        if print_trees:
             print_level(
                 title=f"Tree 1, Move {move_count//2}, Nodes {len(last_level1)}",
                 level=last_level1,
@@ -186,6 +186,13 @@ def solve(
     if intersection is None:
         print("No solution found")
         return None
+
+    if print_trees:
+        print("Intersection:")
+        id1 = record1[intersection].id
+        id2 = record2[intersection].id
+        print(f"ids ({id1}, {id2})")
+        intersection.print_matrix()
 
     path1 = []
     curr = record1[intersection]
@@ -221,7 +228,7 @@ def solve(
     for state in path2[:-1]:
         move = reverse_dir[state.last_move]
         moves.append(move)
-    print(f"{len(moves)} moves long solution")
+    print(f"{len(moves)} moves long solution:")
     print("".join(moves))
 
 
@@ -260,7 +267,7 @@ def main():
     solve(
         start_pos=start_pos,
         print_move_by_move=(print_mbm_ans == "y"),
-        print_tree=(print_tree_ans == "y"),
+        print_trees=(print_tree_ans == "y"),
     )
     end_t = time.time()
     print(f"Took {round(end_t - start_t, 2)}s")
