@@ -5,6 +5,8 @@ from functools import partial
 from threading import Thread
 import math
 from typing import Tuple
+import sys
+import humanize
 
 dy = [-1, 0, 0, 1]
 dx = [0, -1, 1, 0]
@@ -219,8 +221,12 @@ def solve(
     if print_move_by_move:
         print_game(path1, path2)
 
-    print(f"\n{len(record1) + len(record2)} nodes saved")
-    print(f"{State.counter} nodes initialized")
+    saved_node_cnt = len(record1) + len(record2)
+    node_sz = sys.getsizeof(start_state)
+    print(f"\n{State.counter} nodes initialized")
+    print(f"{saved_node_cnt} nodes saved")
+    print(f"Size of node: {node_sz} B")
+    print(f"Size of all saved nodes: {humanize.naturalsize(saved_node_cnt * node_sz)}")
 
     moves = []
     for state in path1[1:]:
@@ -275,3 +281,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""
+Moguce optimizacije:
+C tipovi umesto svih tipova u State 0B? overhead umesto 24B overhead, np.uint32 idalje size 28 za jednu var
+drugi jezik
+"""
