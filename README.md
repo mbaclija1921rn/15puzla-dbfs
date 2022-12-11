@@ -3,7 +3,7 @@ Cilj igre je da se kvadrati poređaju od 1 do najvećeg broja po redovima i kolo
 polje bez podizanja kvadrata sa stola tako da prazno bolje završi na donjoj desnoj poziciji.
 ![15puzzle4t4](https://user-images.githubusercontent.com/116192274/206067811-b0688553-05a8-4b18-a1e3-c413b3e3e33c.png)
 # Naivno rešenje - BFS
-Prertagaom svakog stanja broj čvorova u bfs raste eksponenciono ~2 puta u svakoj iteraciji (novi nivo). 
+Pretragom svakog stanja broj čvorova u bfs raste eksponenciono ~2 puta u svakoj iteraciji (novi nivo). 
 Broj čvorova je (d = dužina rešenja) ~2d. Svaki čvor sadrži kopiju stanja, rešenje od 30 poteza za 
 4 puta 4 igru koristi ~16GB memorije. Za 40 poteza ~16TB memorije, itd... Vremenska i memorijska složenost su O(2d).
 
